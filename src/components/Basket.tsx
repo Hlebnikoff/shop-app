@@ -13,7 +13,6 @@ export const Basket = () => {
 
 	const totalPrice = basket.reduce((sum, prod) => sum + prod.price, 0)
 
-	// Мемоизируем функцию рендера, чтобы избежать лишних пересозданий
 	const renderBasketItem = useCallback((product: { id: number; name: string; price: number }) => (
 		<BasketItem
 			key={product.id}

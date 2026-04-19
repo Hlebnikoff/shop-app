@@ -1,4 +1,4 @@
-import { createSlice, type PayloadAction,  } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction, } from "@reduxjs/toolkit";
 import type { IProduct } from "../../types/product.types";
 
 interface BasketState {
@@ -28,7 +28,6 @@ export const basketSlice = createSlice({
 			localStorage.setItem('basket_items', JSON.stringify(state.items));
 		},
 
-		// Изменяем: принимаем number (id) вместо всего объекта
 		deleteFromBasket: (state, action: PayloadAction<number>) => {
 			const productId = action.payload;
 			state.items = state.items.filter(p => p.id !== productId);

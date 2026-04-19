@@ -13,16 +13,15 @@ import type { TAppDispatch } from './store/store';
 
 function App() {
   const dispatch = useDispatch<TAppDispatch>();
-  
+
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [currentSort, setCurrentSort] = useState<SortType>('name-asc');
 
-  // Загружаем товары при монтировании
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
 
-  // Используем хук для работы с URL параметрами
+  // хук для url
   const { updateCategoryParam, updateSortParam } = useUrlFilters(
     setSelectedCategory,
     setCurrentSort
