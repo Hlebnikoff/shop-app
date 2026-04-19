@@ -1,43 +1,49 @@
-import { PRODUCTS } from "../data/products.data"
-import { useActions } from "../hooks/useActions"
-import { useBasket } from "../hooks/useBasket"
-import { useMemo } from "react"
+import { useMemo } from "react";
+import { useActions } from "../hooks/useActions";
+import { useBasket } from "../hooks/useBasket";
+import { useProducts } from "../hooks/useProducts";
+import type { SortType } from "../types/sort.types";
+import { sortProducts } from "../utils/sortProducts";
 
 type ProductsListProps = {
 	selectedCategory: string;
-	currentSort: string;  // Добавляем пропс для сортировки
-}
+	currentSort: SortType;
+};
 
 export const ProductsList = ({ selectedCategory, currentSort }: ProductsListProps) => {
-	const basket = useBasket()
-	const { addToBasket } = useActions()
+	const basket = useBasket();
+	const { products, loading, error } = useProducts();
+	const { addToBasket } = useActions();
 
 	const isExist = (productId: number) => {
-		return basket.some(p => p.id === productId)
-	}
+		return basket.some(p => p.id === productId);
+	};
 
 	const filteredProducts = useMemo(() => {
 		return selectedCategory === 'all'
-			? [...PRODUCTS]
-			: PRODUCTS.filter(product => product.categoryValue === selectedCategory)
-	}, [selectedCategory])
+			? [...products]
+			: products.filter(product => product.categoryValue === selectedCategory);
+	}, [selectedCategory, products]);
 
 	const sortedProducts = useMemo(() => {
-		const products = [...filteredProducts]
+		return sortProducts(filteredProducts, currentSort);
+	}, [filteredProducts, currentSort]);
 
-		switch (currentSort) {
-			case 'name-asc':
-				return products.sort((a, b) => a.name.localeCompare(b.name))
-			case 'name-desc':
-				return products.sort((a, b) => b.name.localeCompare(a.name))
-			case 'price-asc':
-				return products.sort((a, b) => a.price - b.price)
-			case 'price-desc':
-				return products.sort((a, b) => b.price - a.price)
-			default:
-				return products
-		}
-	}, [filteredProducts, currentSort])
+	if (loading) {
+		return (
+			<div className="products-list">
+				<div className="loading">Загрузка товаров...</div>
+			</div>
+		);
+	}
+
+	if (error) {
+		return (
+			<div className="products-list">
+				<div className="error">Ошибка: {error}</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className="products-list">
@@ -54,7 +60,7 @@ export const ProductsList = ({ selectedCategory, currentSort }: ProductsListProp
 							<button
 								disabled={isExist(product.id)}
 								onClick={() => {
-									addToBasket(product)
+									addToBasket(product);
 								}}
 								className="add-to-cart"
 							>
@@ -65,5 +71,5 @@ export const ProductsList = ({ selectedCategory, currentSort }: ProductsListProp
 				))
 			)}
 		</div>
-	)
-}
+	);
+};

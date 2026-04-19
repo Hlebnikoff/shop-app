@@ -1,29 +1,32 @@
-import { useEffect, useState } from 'react'
-import './App.css'
-import { Basket } from './components/Basket'
-import { CategoryFilter } from './components/CategoryFilter'
-import { ProductsList } from './components/ProductsList'
-import { SortBar } from './components/SortBar'
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import './App.css';
+import { Basket } from './components/Basket';
+import { CategoryFilter } from './components/CategoryFilter';
+import { ProductsList } from './components/ProductsList';
+import { SortBar } from './components/SortBar';
+import { useUrlFilters } from './hooks/useUrlFilters';
 
+import type { SortType } from './types/sort.types';
+import { fetchProducts } from './store/product/product.slice';
+import type { TAppDispatch } from './store/store';
 
 function App() {
-  const [selectedCategory, setSelectedCategory] = useState(() => {
-    const saved = localStorage.getItem('selectedCategory')
-    return saved !== null ? saved : 'all'
-  })
+  const dispatch = useDispatch<TAppDispatch>();
+  
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [currentSort, setCurrentSort] = useState<SortType>('name-asc');
 
-  const [currentSort, setCurrentSort] = useState(() => {
-    const saved = localStorage.getItem('currentSort')
-    return saved !== null ? saved : 'name-asc'
-  })
-
+  // Загружаем товары при монтировании
   useEffect(() => {
-    localStorage.setItem('selectedCategory', selectedCategory)
-  }, [selectedCategory])
+    dispatch(fetchProducts());
+  }, [dispatch]);
 
-  useEffect(() => {
-    localStorage.setItem('currentSort', currentSort)
-  }, [currentSort])
+  // Используем хук для работы с URL параметрами
+  const { updateCategoryParam, updateSortParam } = useUrlFilters(
+    setSelectedCategory,
+    setCurrentSort
+  );
 
   return (
     <div className='app'>
@@ -37,22 +40,21 @@ function App() {
 
       <div className='main-container'>
         <aside className='sidebar'>
-          <CategoryFilter
-            onCategoryChange={setSelectedCategory}
-          />
+          <CategoryFilter onCategoryChange={updateCategoryParam} />
         </aside>
         <main className='products-content'>
           <SortBar
-            onSortChange={setCurrentSort}
-            currentSort={currentSort} />
+            onSortChange={updateSortParam}
+            currentSort={currentSort}
+          />
           <ProductsList
             selectedCategory={selectedCategory}
-            currentSort={currentSort} />
+            currentSort={currentSort}
+          />
         </main>
       </div>
-      {/* CardSidebar */}
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

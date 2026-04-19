@@ -1,22 +1,14 @@
-// hooks/useBasketOverlay.ts
-import { useCallback } from 'react';
+import { useState, useCallback } from 'react';
 
 export const useBasketOverlay = () => {
-  const openBasket = useCallback(() => {
-    const basketOverlay = document.getElementById('basketOverlay');
-    const basketSidebar = document.getElementById('basketSidebar');
+  const [isOpen, setIsOpen] = useState(false);
 
-    if (basketOverlay) basketOverlay.classList.add('open');
-    if (basketSidebar) basketSidebar.classList.add('open');
+  const openBasket = useCallback(() => {
+    setIsOpen(true);
   }, []);
 
   const closeBasket = useCallback(() => {
-    const basketOverlay = document.getElementById('basketOverlay');
-    const basketSidebar = document.getElementById('basketSidebar');
-
-    if (basketOverlay) basketOverlay.classList.remove('open');
-    if (basketSidebar) basketSidebar.classList.remove('open');
+    setIsOpen(false);
   }, []);
-
-  return { openBasket, closeBasket };
+  return { isOpen, openBasket, closeBasket };
 };

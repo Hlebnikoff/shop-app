@@ -1,23 +1,30 @@
 import React from "react";
 import { useActions } from "../hooks/useActions";
-import type { IProduct } from "../types/product.types"
 
 interface BasketItemProps {
-	product: IProduct
+  id: number;
+  name: string;
+  price: number;
 }
 
-export const BasketItem = React.memo(({ product }: BasketItemProps) => {
-	const { deleteFromBasket } = useActions();
+export const BasketItem = React.memo(({ id, name, price }: BasketItemProps) => {
+  const { deleteFromBasket } = useActions();
 
-	return (
-		<div className="basket-item">
-			<div className="basket-item-info">
-				<div className="basket-item-name">{product.name}</div>
-				<div className="basket-item-price">{product.price.toLocaleString()} ₽</div>
-			</div>
-			<button onClick={() => deleteFromBasket(product)} className="basket-item-remove">
-				✕
-			</button>
-		</div>
-	);
+  const handleDelete = React.useCallback(() => {
+    deleteFromBasket(id); // Просто передаем id
+  }, [deleteFromBasket, id]);
+
+  return (
+    <div className="basket-item">
+      <div className="basket-item-info">
+        <div className="basket-item-name">{name}</div>
+        <div className="basket-item-price">{price.toLocaleString()} ₽</div>
+      </div>
+      <button onClick={handleDelete} className="basket-item-remove">
+        ✕
+      </button>
+    </div>
+  );
 });
+
+BasketItem.displayName = 'BasketItem';
