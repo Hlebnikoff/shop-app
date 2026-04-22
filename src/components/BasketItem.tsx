@@ -10,9 +10,9 @@ interface BasketItemProps {
 export const BasketItem = React.memo(({ id, name, price }: BasketItemProps) => {
 	const { deleteFromBasket } = useActions();
 
-	const handleDelete = React.useCallback(() => {
-		deleteFromBasket(id); // только id
-	}, [deleteFromBasket, id]);
+	const handleDelete = () => {
+		deleteFromBasket(id);
+	};
 
 	return (
 		<div className="basket-item">

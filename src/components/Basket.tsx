@@ -1,15 +1,20 @@
 import { useCallback } from 'react';
-import { useActions } from "../hooks/useActions";
 import { useBasket } from "../hooks/useBasket"
 import { useBasketOverlay } from "../hooks/useBasketOverlay";
 import { BasketItem } from "./BasketItem";
+import { basketActions } from '../store/basket/basket.slice';
+import { useDispatch } from 'react-redux';
 
 export const Basket = () => {
 	const basket = useBasket()
 
+	const dispatch = useDispatch()
+
 	const { isOpen, openBasket, closeBasket } = useBasketOverlay()
 
-	const { deleteAllProductsBasket } = useActions()
+	const handleDeleteAll = () => {
+		dispatch(basketActions.deleteAllProductsBasket())
+	}
 
 	const totalPrice = basket.reduce((sum, prod) => sum + prod.price, 0)
 
@@ -44,7 +49,7 @@ export const Basket = () => {
 				<div className="basket-footer">
 					<div className="basket-total">Итог: {totalPrice.toLocaleString()} ₽</div>
 					{basket.length > 0 && (
-						<button onClick={() => deleteAllProductsBasket()} className="clear-basket">
+						<button onClick={handleDeleteAll} className="clear-basket">
 							Очистить корзину
 						</button>
 					)}

@@ -8,8 +8,8 @@ import { SortBar } from './components/SortBar';
 import { useUrlFilters } from './hooks/useUrlFilters';
 
 import type { SortType } from './types/sort.types';
-import { fetchProducts } from './store/product/product.slice';
 import type { TAppDispatch } from './store/store';
+import { fetchProducts } from './store/product/product.thunk';
 
 function App() {
   const dispatch = useDispatch<TAppDispatch>();
