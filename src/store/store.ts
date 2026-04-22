@@ -1,13 +1,16 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { basketReducer } from "./basket/basket.slice";
+import { productsReducer } from "./product/product.slice";
 
-const redusers = combineReducers({
+
+const reducers = combineReducers({
 	basket: basketReducer,
-})
+	products: productsReducer,
+});
 
 export const store = configureStore({
-	reducer: redusers
-})
+	reducer: reducers
+});
 
 export type TRootState = ReturnType<typeof store.getState>;
 export type TAppDispatch = typeof store.dispatch;
